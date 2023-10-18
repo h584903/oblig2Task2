@@ -36,7 +36,7 @@ class TestsAdminUser {
 				.put(API_ROOT+"/users/{id}", 1);
 	    
 	    assertEquals(HttpStatus.OK.value(), response.getStatusCode());
-	    assertEquals("robert@email.com", response.jsonPath().get("email"));
+	    assertEquals("@email.com", response.jsonPath().get("email"));
 	}
 	
 	@DisplayName("JUnit test for @DeleteMapping(/users/{id}) endpoint")

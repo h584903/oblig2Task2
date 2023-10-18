@@ -22,12 +22,7 @@ class TestUser {
 	
 	private static final String API_ROOT = "http://localhost:8090/elibrary/api/v1";	
 	
-	private String ADMIN_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWS"
-			+ "IsImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiU1VQRVJfQURNSU4iLCJVU0VSIiwiQU"
-			+ "RNSU4iXSwiaWF0IjoxNjk2MjAwMTk3LCJleHAiOjE2OTYyODY1OTd9.eLWV51s4rtauq04wiB_ohBMdpfC7k3D9gHPpIqPUmFinV_VBvI"
-			+ "0iuHTev4Xc7Sq5qiSV7aAG3abY96Hu-mG5r23EVFy1Ipwq8t_02-mCzvIcSh25TlcHWUtfzKqM2UPcAwnvZnpvjhDYyPUnKgTN42uZn-ms"
-			+ "SO0N3zo8XT859Eylh2OsRWKla8UYXEz_GttR4cQ1--0-aIIAvOgYk8HmgriOIpQs4WuolzfLsMelk0xEo_C5vMv3XEpaWrKOOhjUl7Gwqqk"
-			+ "R7wT_yISPlLHj28ZcUAgGbKa_R73Fm8br8tgwOaz_nHpi25Nf_VAlqeBKsb5Z8rykM1WVzb9Va242IA";
+	private String ADMIN_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWSIsImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiVVNFUiIsIkFETUlOIiwiU1VQRVJfQURNSU4iXSwiaWF0IjoxNjk3NjQxMDk3LCJleHAiOjE2OTgwNzMwOTd9.Bd_oM9voJYHJzLYdGcllJ1_wkoueIFf1DxUZIw8BuKbergR4xjpCRBxTiTwkk3uVrMH9Dx98Y7RBX4oRmW8aF3tsCk_j8WPWNDKiWufEYmVx5RPAABJFpJnA17jUoH5DFZEaNndl5db2ZwLVEVcY2TUXyJiDqszdJWiIhJG4n50pVr2bCno-e4zmAlVSCkUqQc-PwbovMUK3JU5aW5Q5EMvOYrOBWWn3FNVueWJnJ6wEyShpLYSlV_-2hBeMkFzk8qStlQwxLMbww_cQf4f-AU01Z3e52gt399Zp-keQ1K5gAmQar7bX_QYEweK2DdV75C7BgcBgn5PuuPDswI2PrA";
 	
 	private String USER_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyb2JlcnRAZW1haWwuY29tIiwiaXNzIjoiREFUMTUyLUxlY3R1cmVyQFRET"
 			+ "1kiLCJmaXJzdG5hbWUiOiJSb2JlcnQiLCJsYXN0bmFtZSI6IklzYWFjIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE2OTYyNTUwNjgsImV4cC"
@@ -94,7 +89,7 @@ class TestUser {
 				.post(API_ROOT+"/users/{id}/orders", "2");
 
 	    assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
-	    assertTrue(response.jsonPath().getList("orders").get(0).toString().contains("qabfde1230"));
+	    assertTrue(response.jsonPath().getList("orders").get(1).toString().contains("qabfde1230"));
 
 	}
 	

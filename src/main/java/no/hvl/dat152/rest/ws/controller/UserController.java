@@ -38,7 +38,7 @@ public class UserController {
 	private UserService userService;
 	
 	@GetMapping("/users")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getUsers(){
 		
 		List<User> users = userService.findAllUsers();
@@ -51,7 +51,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value = "/users/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getUser(@PathVariable("id") Long id) 
 			throws UserNotFoundException, OrderNotFoundException, UnauthorizedOrderActionException{
 		
@@ -69,7 +69,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/users/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) throws UserNotFoundException{
 		
 		userService.deleteUser(id);
@@ -78,7 +78,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/users/{id}/orders")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getUserOrders(@PathVariable("id") Long id) throws UserNotFoundException{
 		
 		Set<Order> orders = userService.findOrdersForUser(id);
@@ -87,12 +87,12 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/{id}/orders")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> createUserOrders(@PathVariable("id") Long id, @RequestBody Order order) 
 			throws UserNotFoundException, OrderNotFoundException, UnauthorizedOrderActionException{
 		
 		
-		return new ResponseEntity<>(userService.createOrdersForUser(id, order), HttpStatus.OK);
+		return new ResponseEntity<>(userService.createOrdersForUser(id, order), HttpStatus.CREATED);
 		
 	}
 	

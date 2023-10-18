@@ -41,24 +41,22 @@ public class OrderController {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	/**
-	 * This method can take query params (e.g.
-	 * orders?expiry=2023-10-19)should give list of orders that have expiry date less than the specified date
-	 * (orders?expiry=2023-10-19&page=1&size=5) 
+	 * This method can take query params (e.g. orders?expiry=2023-10-19)should give
+	 * list of orders that have expiry date less than the specified date
+	 * (orders?expiry=2023-10-19&page=1&size=5)
 	 * 
 	 * @param expiry
-	 * @param page (page number)
-	 * @param size (# of record to fetch)
+	 * @param page   (page number)
+	 * @param size   (# of record to fetch)
 	 * @return ResponseEntity<Object>
 	 */
 	@GetMapping("/orders")
-	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<Object> getAllBorrowOrders(
-			@RequestParam(required = false) LocalDate expiry, 
-			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "3") int size){
-		
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public ResponseEntity<Object> getAllBorrowOrders(@RequestParam(required = false) LocalDate expiry,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+
 		Pageable paging = PageRequest.of(page, size);
 
 		List<Order> orderList;
@@ -69,42 +67,42 @@ public class OrderController {
 		}
 
 		// Create links for pagination
-	    List<Link> links = new ArrayList<>();
-	    if (orderList.size() > size) {
-	        Link nextLink = linkTo(methodOn(OrderController.class).getAllBorrowOrders(expiry, page + 1, size))
-	                .withRel("next");
-	        links.add(nextLink);
-	    }
+		List<Link> links = new ArrayList<>();
+		if (orderList.size() > size) {
+			Link nextLink = linkTo(methodOn(OrderController.class).getAllBorrowOrders(expiry, page + 1, size))
+					.withRel("next");
+			links.add(nextLink);
+		}
 
 		// Create a response object with orders and links
-	    ResponseEntity<Object> responseEntity = new ResponseEntity<>(orderList, HttpStatus.OK);
-	    if (!links.isEmpty()) {
-	        responseEntity.getHeaders().add("Links", links.toString());
-	    }
+		ResponseEntity<Object> responseEntity = new ResponseEntity<>(orderList, HttpStatus.OK);
+		if (!links.isEmpty()) {
+			responseEntity.getHeaders().add("Links", links.toString());
+		}
 
 		return responseEntity;
-		
+
 	}
-	
+
 	@GetMapping("/orders/{id}")
 	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<Object> getBorrowOrder(@PathVariable("id") Long id) 
-			throws OrderNotFoundException, UnauthorizedOrderActionException{
+	public ResponseEntity<Object> getBorrowOrder(@PathVariable("id") Long id)
+			throws OrderNotFoundException, UnauthorizedOrderActionException {
 
 		try {
 			Order order = orderService.findOrder(id);
 			return new ResponseEntity<>(order, HttpStatus.OK);
 
-		} catch (OrderNotFoundException e) {
+		} catch (UnauthorizedOrderActionException e) {
 
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PutMapping("/orders/{id}")
 	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<Object> updateOrder(@PathVariable("id") Long id, @RequestBody Order order) 
-			throws OrderNotFoundException, UserNotFoundException, UnauthorizedOrderActionException{
+	public ResponseEntity<Object> updateOrder(@PathVariable("id") Long id, @RequestBody Order order)
+			throws OrderNotFoundException, UserNotFoundException, UnauthorizedOrderActionException {
 
 		order = orderService.updateOrder(order, id);
 		Link rordersLink = linkTo(methodOn(OrderController.class).returnBookOrder(id))
@@ -113,19 +111,19 @@ public class OrderController {
 
 		return new ResponseEntity<>(order, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/orders/{id}")
 	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<Object> returnBookOrder(@PathVariable("id") Long id) 
-			throws OrderNotFoundException, UnauthorizedOrderActionException{
-		
+	public ResponseEntity<Object> returnBookOrder(@PathVariable("id") Long id)
+			throws OrderNotFoundException, UnauthorizedOrderActionException {
+
 		try {
 			orderService.deleteOrder(id);
 			return new ResponseEntity<>("Order with id: '" + id + "' deleted!", HttpStatus.OK);
 		} catch (OrderNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 	}
-	
+
 }
