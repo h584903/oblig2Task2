@@ -3,7 +3,6 @@
  */
 package no.hvl.dat152.rest.ws.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,25 +27,31 @@ public class AdminUserController {
 
 	@Autowired
 	private AdminUserService userService;
-	
+
 	@PutMapping("/users/{id}")
-	// TODO authority annotation
-	public ResponseEntity<Object> updateUserRole(@PathVariable("id") Long id, @RequestParam("role") String role) 
-			throws UserNotFoundException{
-		
-		// TODO
-		
-		return null;
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
+	public ResponseEntity<Object> updateUserRole(@PathVariable("id") Long id, @RequestParam("role") String role)
+			throws UserNotFoundException {
+
+		try {
+			User updatedUser = userService.updateUserRole(id, role);
+			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+		} catch (UserNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
 	}
-	
+
 	@DeleteMapping("/users/{id}")
-	// TODO authority annotation
-	public ResponseEntity<Object> deleteUserRole(@PathVariable("id") Long id, 
-			@RequestParam("role") String role) throws UserNotFoundException{
-		
-		// TODO
-		
-		return null;
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
+	public ResponseEntity<Object> deleteUserRole(@PathVariable("id") Long id, @RequestParam("role") String role)
+			throws UserNotFoundException {
+
+		try {
+			User updatedUser = userService.deleteUserRole(id, role);
+			return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+		} catch (UserNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
 	}
-	
+
 }
