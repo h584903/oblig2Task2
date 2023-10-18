@@ -36,9 +36,11 @@ public class BookService {
 	public Book updateBook(Book book, String isbn) 
 			throws BookNotFoundException, UpdateBookFailedException {
 		
-		// TODO
+
+		deleteByISBN(isbn);
+		bookRepository.save(book);
 		
-		return null;
+		return book;
 	}
 	
 	public List<Book> findAll(){
@@ -71,15 +73,18 @@ public class BookService {
 	
 	public Set<Author> findAuthorsByBookISBN(String isbn) throws BookNotFoundException{
 		
-		// TODO
+		Book book = findByISBN(isbn);
+		Set<Author> authors = book.getAuthors();
 		
-		return null;
+		return authors;
 		
 	}
 	
 	public void deleteByISBN(String isbn) throws BookNotFoundException {
 		
-		// TODO
+		Book book = bookRepository.findBookByISBN(isbn);
+		bookRepository.delete(book);
+
 
 	}
 	

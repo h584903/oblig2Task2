@@ -19,7 +19,7 @@ import no.hvl.dat152.rest.ws.repository.AuthorRepository;
  */
 @Service
 public class AuthorService {
-
+	
 
 	public Author saveAuthor(Author author) {
 

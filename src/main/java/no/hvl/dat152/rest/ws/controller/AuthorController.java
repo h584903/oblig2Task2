@@ -54,18 +54,12 @@ public class AuthorController {
 	}
 
 	@GetMapping("/authors/{id}")
-	public ResponseEntity<Object> getAuthor(@PathVariable("id") long id) throws AuthorNotFoundException {
-
-		Author author;
-		try {
-			author = authorService.findById(id);
-
-			return new ResponseEntity<>(author, HttpStatus.OK);
-
-		} catch (Exception e) {
-
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	@PreAuthorize("hasAuthority('USER')")
+	public ResponseEntity<Author> getAuthor(@PathVariable("id") Long id) throws AuthorNotFoundException {
+		
+		Author author = authorService.findById(id);
+		
+		return new ResponseEntity<>(author, HttpStatus.OK);		
 	}
 
 	@PutMapping("/authors/{id}")
