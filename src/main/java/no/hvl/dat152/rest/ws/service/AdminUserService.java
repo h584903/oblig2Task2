@@ -35,16 +35,44 @@ public class AdminUserService {
 	
 	public User deleteUserRole(Long id, String role) throws UserNotFoundException {
 		
-		// TODO
+		User user = userRepository.findById(id)
+				.orElseThrow(()-> new UserNotFoundException("User with id: "+id+" not found"));
 		
-		return null;
+		Set<Role> roles = user.getRoles();
+		
+        Role remove = roles.stream()
+                .filter(r -> r.getName().equals(role))
+                .findFirst()
+                .orElse(null);
+		
+        if(remove != null) {
+        	roles.remove(remove);
+        	user.setRoles(roles);
+        	return userRepository.save(user);
+        } else {
+        	throw new IllegalArgumentException("Role not found!");
+        }
+		
 	}
 	
 	public User updateUserRole(Long id, String role) throws UserNotFoundException {
 		
-		// TODO
+		User user = userRepository.findById(id)
+				.orElseThrow(()-> new UserNotFoundException("User with id: "+id+" not found"));
 		
-		return null;
+		
+		Set<Role> roles = user.getRoles();
+		Role newRole = roleRepository.findByName(role);
+		
+		if(newRole == null) {
+			throw new IllegalArgumentException("Role not found!");
+		}
+		
+		roles.add(newRole);
+		user.setRoles(roles);
+		
+			
+		return userRepository.save(user);
 		
 	}
 	
