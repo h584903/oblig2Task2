@@ -53,52 +53,79 @@ public class OrderController {
 	 * @return ResponseEntity<Object>
 	 */
 	@GetMapping("/orders")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getAllBorrowOrders(
 			@RequestParam(required = false) LocalDate expiry, 
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int size){
 		
-		// TODO
+		Pageable paging = PageRequest.of(page, size);
+
+		List<Order> orderList;
+		if (expiry != null) {
+			orderList = orderService.findByExpiryDate(expiry, paging);
+		} else {
+			orderList = orderService.findAllOrders();
+		}
+
+		// Create links for pagination
+	    List<Link> links = new ArrayList<>();
+	    if (orderList.size() > size) {
+	        Link nextLink = linkTo(methodOn(OrderController.class).getAllBorrowOrders(expiry, page + 1, size))
+	                .withRel("next");
+	        links.add(nextLink);
+	    }
+
+		// Create a response object with orders and links
+	    ResponseEntity<Object> responseEntity = new ResponseEntity<>(orderList, HttpStatus.OK);
+	    if (!links.isEmpty()) {
+	        responseEntity.getHeaders().add("Links", links.toString());
+	    }
+
+		return responseEntity;
 		
-		return null;
 	}
 	
 	@GetMapping("/orders/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getBorrowOrder(@PathVariable("id") Long id) 
 			throws OrderNotFoundException, UnauthorizedOrderActionException{
-		
+
 		try {
 			Order order = orderService.findOrder(id);
 			return new ResponseEntity<>(order, HttpStatus.OK);
-			
-		}catch(OrderNotFoundException | UnauthorizedOrderActionException e) {
+
+		} catch (OrderNotFoundException e) {
 
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@PutMapping("/orders/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> updateOrder(@PathVariable("id") Long id, @RequestBody Order order) 
 			throws OrderNotFoundException, UserNotFoundException, UnauthorizedOrderActionException{
 
 		order = orderService.updateOrder(order, id);
-		Link rordersLink = linkTo(methodOn(OrderController.class).returnBookOrder(id)).withRel("Update_Return_or_Cancel");
+		Link rordersLink = linkTo(methodOn(OrderController.class).returnBookOrder(id))
+				.withRel("Update_Return_or_Cancel");
 		order.add(rordersLink);
-		
+
 		return new ResponseEntity<>(order, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/orders/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> returnBookOrder(@PathVariable("id") Long id) 
 			throws OrderNotFoundException, UnauthorizedOrderActionException{
 		
-		// TODO
+		try {
+			orderService.deleteOrder(id);
+			return new ResponseEntity<>("Order with id: '" + id + "' deleted!", HttpStatus.OK);
+		} catch (OrderNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
-		return null;
 	}
 	
 }
