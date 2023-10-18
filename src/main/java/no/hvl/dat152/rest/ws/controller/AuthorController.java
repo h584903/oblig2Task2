@@ -33,14 +33,54 @@ public class AuthorController {
 	@Autowired
 	private AuthorService authorService;
 	
-	@GetMapping("/authors/{id}")
-	@PreAuthorize("hasAuthority('USER')")
-	public ResponseEntity<Author> getAuthor(@PathVariable("id") Long id) throws AuthorNotFoundException {
-		
-		Author author = authorService.findById(id);
-		
-		return new ResponseEntity<>(author, HttpStatus.OK);		
+	@GetMapping("/authors")
+	public ResponseEntity<Object> getAllAuthors() {
+		List<Author> authors = authorService.findAll();
+
+		if (authors.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(authors, HttpStatus.OK);
 	}
 
+	@PostMapping("/authors")
+	public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
+
+		Author nauthor = authorService.saveAuthor(author);
+
+		return new ResponseEntity<>(nauthor, HttpStatus.CREATED);
+
+	}
+
+	@GetMapping("/authors/{id}")
+	public ResponseEntity<Object> getAuthor(@PathVariable("id") long id) throws AuthorNotFoundException {
+
+		Author author;
+		try {
+			author = authorService.findById(id);
+
+			return new ResponseEntity<>(author, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PutMapping("/authors/{id}")
+	public ResponseEntity<Object> updateAuthor(@RequestBody Author author, @PathVariable("id") long id) {
+
+		Author nauthor;
+
+		try {
+			nauthor = authorService.updateAuthor(author);
+		} catch (AuthorNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(nauthor, HttpStatus.OK);
+
+	}
 
 }
