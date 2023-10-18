@@ -57,7 +57,7 @@ public class BookController {
 	}
 	
 	@GetMapping("/books/{isbn}")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getBook(@PathVariable("isbn") String isbn) throws BookNotFoundException{
 		
 		Book book;
@@ -73,7 +73,7 @@ public class BookController {
 	}
 	
 	@GetMapping("/books/{isbn}/authors")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getAuthorsByBookISBN(@PathVariable("isbn") String isbn) throws BookNotFoundException{
 		
 		Set<Author> authors = bookService.findAuthorsByBookISBN(isbn);
@@ -94,7 +94,7 @@ public class BookController {
 	}
 	
 	@PutMapping("/books/{isbn}")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Book> updateBook(@RequestBody Book book, @PathVariable("isbn") String isbn){
 		
 		Book nbook;
@@ -108,7 +108,7 @@ public class BookController {
 	}
 	
 	@DeleteMapping("/books/{isbn}")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<String> deleteBook(@PathVariable("isbn") String isbn) throws BookNotFoundException{
 		
 		bookService.deleteByISBN(isbn);
