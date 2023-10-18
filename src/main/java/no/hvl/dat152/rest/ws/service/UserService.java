@@ -22,53 +22,59 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	public User saveUser(User user) {
-		
+
 		user = userRepository.save(user);
-		
+
 		return user;
 	}
-	
+
 	public void deleteUser(Long id) throws UserNotFoundException {
-		
-		// TODO
+		User bruker = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("Order with id: " + id + " not found in the order list!"));
+
+		userRepository.delete(bruker);
 	}
-	
+
 	public User updateUser(User user, Long id) throws UserNotFoundException {
-		
-		// TODO
-		
-		return null;
-		
+
+		userRepository.deleteById(id);
+		userRepository.save(user);
+
+		return user;
+
 	}
-	
-	public List<User> findAllUsers(){
-		
+
+	public List<User> findAllUsers() {
+
 		List<User> allUsers = (List<User>) userRepository.findAll();
-		
+
 		return allUsers;
 	}
-	
+
 	public User findUser(Long id) throws UserNotFoundException {
-		
+
 		User user = userRepository.findById(id)
-				.orElseThrow(()-> new UserNotFoundException("User with id: "+id+" not found"));
-		
+				.orElseThrow(() -> new UserNotFoundException("User with id: " + id + " not found"));
+
 		return user;
 	}
-	
-	public Set<Order> findOrdersForUser(Long id) throws UserNotFoundException{
-		
+
+	public Set<Order> findOrdersForUser(Long id) throws UserNotFoundException {
+
 		User user = findUser(id);
-		
+
 		return user.getOrders();
 	}
-	
-	public User createOrdersForUser(Long id, Order order) throws UserNotFoundException{
+
+	public User createOrdersForUser(Long id, Order order) throws UserNotFoundException {
+
+		User user = findUser(id);
 		
-		// TODO
+		user.getOrders().add(order);
+		userRepository.save(user);
 		
-		return null;
+		return user;
 	}
 }
