@@ -20,6 +20,9 @@ import no.hvl.dat152.rest.ws.repository.AuthorRepository;
 @Service
 public class AuthorService {
 	
+	@Autowired
+	private AuthorRepository authorRepository;
+	
 
 	public Author saveAuthor(Author author) {
 
@@ -71,7 +74,20 @@ public class AuthorService {
 		return author;
 
 	}
-	@Autowired
-	private AuthorRepository authorRepository;
 	
+	public Set<Book> getAllBooks(long id) {
+		Author author = null;
+		Set<Book> books = null;
+		
+		try {
+			author = findById(id);
+			books = author.getBooks();
+		} catch (AuthorNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return books;
+
+	}
+
 }

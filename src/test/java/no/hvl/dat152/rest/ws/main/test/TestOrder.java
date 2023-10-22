@@ -84,6 +84,7 @@ class TestOrder {
 				.header("Authorization", "Bearer "+ SUPER_ADMIN_TOKEN)
 	    		.delete(API_ROOT+"/orders/2");
 	    
+	    
 	    // attempt to access the same resource again
 	    Response resp = RestAssured.given()
 				.header("Authorization", "Bearer "+ SUPER_ADMIN_TOKEN)

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,14 +23,15 @@ class TestUser {
 	
 	private static final String API_ROOT = "http://localhost:8090/elibrary/api/v1";	
 	
-	private String ADMIN_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWSIsImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiVVNFUiIsIkFETUlOIiwiU1VQRVJfQURNSU4iXSwiaWF0IjoxNjk3NjQxMDk3LCJleHAiOjE2OTgwNzMwOTd9.Bd_oM9voJYHJzLYdGcllJ1_wkoueIFf1DxUZIw8BuKbergR4xjpCRBxTiTwkk3uVrMH9Dx98Y7RBX4oRmW8aF3tsCk_j8WPWNDKiWufEYmVx5RPAABJFpJnA17jUoH5DFZEaNndl5db2ZwLVEVcY2TUXyJiDqszdJWiIhJG4n50pVr2bCno-e4zmAlVSCkUqQc-PwbovMUK3JU5aW5Q5EMvOYrOBWWn3FNVueWJnJ6wEyShpLYSlV_-2hBeMkFzk8qStlQwxLMbww_cQf4f-AU01Z3e52gt399Zp-keQ1K5gAmQar7bX_QYEweK2DdV75C7BgcBgn5PuuPDswI2PrA";
+	// private String ADMIN_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWSIsImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiVVNFUiIsIkFETUlOIiwiU1VQRVJfQURNSU4iXSwiaWF0IjoxNjk3OTY5NzAzLCJleHAiOjE2OTg0MDE3MDN9.FRNQpvyiKttZJJOurJkLfyltpa-DL9SiCE9CrYn4gpHnZrCTZH6W0S3Aem48ne_tZ9TujS2XjKTjFQi4rc-hNCM9qzwcx7E9Lm-MVMOaUD-ztPQ1mIAT9mG2WkDrcHX4bzPemWPm0zCsO8H5QjmGIPsCj7IK7pSKB30E8OWoMqv4GULwNH2ep4umoxOjtru6l0etGSaWzXxtskSCRHhU6iFy_RM8MSq3sSzn7m0RuXKVRFm6_3eTY3lC6Fwcz3Ui9RyhQBIjNciumc8_YepDqbDlbgDnmHIKZ3RUFbOopXJPLsfZK_orlza4-_WUzirMHteu6QMZjfplV0EvGMMjZA";
 	
-	private String USER_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyb2JlcnRAZW1haWwuY29tIiwiaXNzIjoiREFUMTUyLUxlY3R1cmVyQFRET"
-			+ "1kiLCJmaXJzdG5hbWUiOiJSb2JlcnQiLCJsYXN0bmFtZSI6IklzYWFjIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE2OTYyNTUwNjgsImV4cC"
-			+ "I6MTY5NjM0MTQ2OH0.G1AdRErKUD06FCWZoUJ5RvlbVSFx8eIudf7T3tDamEYgfliPhSFzrBONCHBReUITpaRe5LccsV-IExgzR0UvwkbKff8B"
-			+ "vHR6MukTtQkwRZryr7dklEV3SyMQFGi5rf8UKvchyFbprdWtIvpQWXTfhQM7wTyHiD3z7429dht3E0bJgRg8RzKqNlNBJD7YJLfdcS6j7gjPcu"
-			+ "n2u8TJm73jSIXaW5zib_mwf5ovg0pH4bOh67pmSLFLVGnLEM4CkWvD8SLwGtD8nS5cvW9yEitgeqLhXDffCdQp0pYE17ddZ73DBQ2NvI0uOu5xe"
-			+ "RG4dXIltWb3SdEiwJ3kV8-SKfaDNA";
+	// private String USER_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyb2JlcnRAZW1haWwuY29tIiwiaXNzIjoiREFUMTUyLUxlY3R1cmVyQFRET1kiLCJmaXJzdG5hbWUiOiJSb2JlcnQiLCJsYXN0bmFtZSI6IklzYWFjIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE2OTc5Njk4MzgsImV4cCI6MTY5ODQwMTgzOH0.BKQWQLqSF17PRtcp2wGjUYAEyGR9Dd0ono-DZNADlpy43rotC_D0sjbEyMdPZcK2jSxMTzSlmJPyIFdDaCu_8P507uDfBzs_yqwhgKMg56MEHNAS9-_ecA1mPLbA77FyezJ4R_AQZTJhoEGOzxSVGu41o_4YRpRey0utNZlkaqt-UsbWfJQ0v6LtGrJK3VEihGzZoHiyY-fZ0k3IC3FFkXupe08zhTVxNi2GxsFiJAgpcLVSDHE8M44OVCHyv_kO4KvjLso37empFWBAtFQFBHL2-QjxhDiIlXFso9v3C-DHEs_WNWr5bHbG-o62qu85H1V6gJSeR6E0oHmy1q54Zw";
+	
+	@Value("${super.admin.token}") 
+	private String ADMIN_TOKEN;
+	
+	@Value("${user.token}")
+	private String USER_TOKEN;
 	
 	@DisplayName("JUnit test for @GetMapping(/users) endpoint")
 	@Test
@@ -89,7 +91,7 @@ class TestUser {
 				.post(API_ROOT+"/users/{id}/orders", "2");
 
 	    assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
-	    assertTrue(response.jsonPath().getList("orders").get(1).toString().contains("qabfde1230"));
+	    assertTrue(response.jsonPath().getList("orders").get(0).toString().contains("qabfde1230"));
 
 	}
 	

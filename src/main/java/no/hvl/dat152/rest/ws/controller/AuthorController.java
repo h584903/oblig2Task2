@@ -54,7 +54,7 @@ public class AuthorController {
 	}
 
 	@GetMapping("/authors/{id}")
-	@PreAuthorize("hasAuthority('USER')")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Author> getAuthor(@PathVariable("id") Long id) throws AuthorNotFoundException {
 		
 		Author author = authorService.findById(id);
@@ -63,6 +63,7 @@ public class AuthorController {
 	}
 
 	@PutMapping("/authors/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> updateAuthor(@RequestBody Author author, @PathVariable("id") long id) {
 
 		Author nauthor;
@@ -75,6 +76,21 @@ public class AuthorController {
 
 		return new ResponseEntity<>(nauthor, HttpStatus.OK);
 
+	}
+	
+	@GetMapping("/authors/{id}/books")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public ResponseEntity<Object> getAllBooksAuthor(@PathVariable("id") Long id) throws AuthorNotFoundException {
+		
+		Set<Book> books;
+		
+		try {
+			books = authorService.getAllBooks(id);
+		} catch (AuthorNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(books, HttpStatus.OK);		
 	}
 
 }

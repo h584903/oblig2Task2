@@ -36,11 +36,14 @@ public class OrderService {
 	}
 	
 	public void deleteOrder(Long id) throws OrderNotFoundException, UnauthorizedOrderActionException {
-		Order order = orderRepository.findById(id)
-				.orElseThrow(()-> new OrderNotFoundException("Order with id: "+id+" not found in the order list!"));
 		
-		orderRepository.delete(order);
+	    if (orderRepository.existsById(id)) {
+	        orderRepository.deleteById(id);
+	    } else {
+	        throw new OrderNotFoundException("Order with id: " + id + " not found in the order list!");
+	    }
 	}
+
 	
 	public List<Order> findAllOrders(){
 		
@@ -63,10 +66,19 @@ public class OrderService {
 	
 	public Order updateOrder(Order order, Long id) throws OrderNotFoundException, UnauthorizedOrderActionException {
 		 
-		orderRepository.deleteById(id);
-		orderRepository.save(order);
+		verifyPrincipalOfOrder(id);	
 		
-		return order;				
+		Order update = orderRepository.findById(id)
+				.orElseThrow(()-> new OrderNotFoundException("Order with id: "+id+" not found in the order list!"));
+		
+		update.setExpiry(order.getExpiry());
+		update.setId(order.getId());
+		update.setIsbn(order.getIsbn());
+		
+		update = orderRepository.save(update);
+		
+		return update;
+		
 	}
 	
 	public List<Order> findByExpiryDate(LocalDate expiry, Pageable page){

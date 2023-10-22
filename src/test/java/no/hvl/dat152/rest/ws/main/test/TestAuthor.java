@@ -27,7 +27,7 @@ class TestAuthor {
 
 	private String API_ROOT = "http://localhost:8090/elibrary/api/v1";
 
-	@Value("${admin.token}") 
+	@Value("${super.admin.token}") 
 	private String ADMIN_TOKEN;
 	
 	@Value("${user.token}")

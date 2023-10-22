@@ -53,7 +53,7 @@ public class OrderController {
 	 * @return ResponseEntity<Object>
 	 */
 	@GetMapping("/orders")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
 	public ResponseEntity<Object> getAllBorrowOrders(@RequestParam(required = false) LocalDate expiry,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
 
@@ -85,7 +85,7 @@ public class OrderController {
 	}
 
 	@GetMapping("/orders/{id}")
-	@PreAuthorize("hasAuthority('USER')")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
 	public ResponseEntity<Object> getBorrowOrder(@PathVariable("id") Long id)
 			throws OrderNotFoundException, UnauthorizedOrderActionException {
 
@@ -93,14 +93,14 @@ public class OrderController {
 			Order order = orderService.findOrder(id);
 			return new ResponseEntity<>(order, HttpStatus.OK);
 
-		} catch (UnauthorizedOrderActionException e) {
+		} catch (Exception e) {
 
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@PutMapping("/orders/{id}")
-	@PreAuthorize("hasAuthority('USER')")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
 	public ResponseEntity<Object> updateOrder(@PathVariable("id") Long id, @RequestBody Order order)
 			throws OrderNotFoundException, UserNotFoundException, UnauthorizedOrderActionException {
 
@@ -113,7 +113,7 @@ public class OrderController {
 	}
 
 	@DeleteMapping("/orders/{id}")
-	@PreAuthorize("hasAuthority('USER')")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
 	public ResponseEntity<Object> returnBookOrder(@PathVariable("id") Long id)
 			throws OrderNotFoundException, UnauthorizedOrderActionException {
 

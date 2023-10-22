@@ -38,7 +38,7 @@ public class UserController {
 	private UserService userService;
 	
 	@GetMapping("/users")
-	@PreAuthorize("hasAuthority('USER')")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> getUsers(){
 		
 		List<User> users = userService.findAllUsers();
@@ -87,7 +87,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/{id}/orders")
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
 	public ResponseEntity<Object> createUserOrders(@PathVariable("id") Long id, @RequestBody Order order) 
 			throws UserNotFoundException, OrderNotFoundException, UnauthorizedOrderActionException{
 		
